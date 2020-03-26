@@ -9,11 +9,13 @@ namespace Citatnik.Models
     {
         public string Login { get; set; }
         public string Password { get; set; }
+        public int[] CitataIds { get; set; }
 
-        public User(string Login, string Password)
+        public User(string login, string password, int[] citataIds)
         {
-            this.Login = Login;
-            this.Password = Password;
+            Login = login;
+            Password = password;
+            CitataIds = citataIds;
         }
     }
 }

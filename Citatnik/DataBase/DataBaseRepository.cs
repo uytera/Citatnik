@@ -14,20 +14,24 @@ namespace Citatnik.DataBase
             get { return Environment.CurrentDirectory + "\\DataBase.sqlite"; }
         }
 
+
         public static SqliteConnection DbConnection()
         {
             return new SqliteConnection("Data Source=" + DbFile);
         }
+
 
         protected static void CreateDataBase()
         {
             using (SqliteConnection dbConnection = DbConnection())
             {
                 dbConnection.Open();
-                SqliteCommand command = new SqliteCommand();
-                command.Connection = dbConnection;
-
-                command.CommandText = "CREATE TABLE IF NOT EXISTS Users (Login TEXT PRIMARY KEY, Password TEXT);";
+                SqliteCommand command = new SqliteCommand
+                {
+                    Connection = dbConnection,
+                    CommandText = @"CREATE TABLE IF NOT EXISTS Users (Login TEXT PRIMARY KEY, Password TEXT, CitataIds TEXT);
+                                    CREATE TABLE IF NOT EXISTS Citats (CitataId INTEGER PRIMARY KEY, Title TEXT, Content TEXT, CreationDate TEXT);"
+                };
 
                 try
                 {

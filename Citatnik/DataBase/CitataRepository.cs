@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace Citatnik.DataBase
 {
-    public class UserRepository : DataBaseRepository, IUserRepository
+    public class CitataRepository : DataBaseRepository, ICitataRepository
     {
-        public void AddUser(User user)
+        public int LastId;
+
+        public void AddCitata(Citata citata)
         {
             CreateDataBase();
 
@@ -20,23 +22,24 @@ namespace Citatnik.DataBase
                 SqliteCommand command = new SqliteCommand
                 {
                     Connection = dbConnection,
-                    CommandText = @"INSERT INTO Users (Login, Password, CitataIds)
-                                    VALUES ('" + user.Login + "','" + user.Password + "','" + String.Join(" ", user.CitataIds) + "')"
+                    CommandText = @"INSERT INTO Citats (Title, Content, CreationDate)
+                                    VALUES ('" + citata.Title + "','" + citata.Content + "','" + citata.CreationDate + "')"
                 };
 
                 try
                 {
                     command.ExecuteNonQuery();
+
+                    LastId += 1;
                 }
-                catch(SqliteException exeption)
+                catch (SqliteException exeption)
                 {
-                    Console.WriteLine("Error when adding a user to the database:" + exeption.Message);
+                    Console.WriteLine("Error when adding a citata to the database:" + exeption.Message);
                 }
             }
         }
 
-
-        public User GetUser(string login)
+        public Citata GetCitata(int id)
         {
             CreateDataBase();
 
@@ -47,7 +50,7 @@ namespace Citatnik.DataBase
                 SqliteCommand command = new SqliteCommand
                 {
                     Connection = dbConnection,
-                    CommandText = "SELECT * FROM Users WHERE Login = '" + login + "'"
+                    CommandText = "SELECT * FROM Citats WHERE CitataId = '" + id + "'"
                 };
 
                 try
@@ -57,16 +60,14 @@ namespace Citatnik.DataBase
                     if (reader.HasRows)
                     {
                         reader.Read();
-                        User user = new User(reader.GetString(0),
-                                             reader.GetString(1),
-                                             reader.GetString(2).Split(" ").Select(n => Convert.ToInt32(n)).ToArray());
+                        Citata citata = new Citata(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), reader.GetString(3));
 
-                        return user;
+                        return citata;
                     }
                 }
-                catch(SqliteException exeption)
+                catch (SqliteException exeption)
                 {
-                    Console.WriteLine("Error when getting the user from the database:" + exeption.Message);
+                    Console.WriteLine("Error when getting the citata from the database:" + exeption.Message);
                 }
 
                 return null;
