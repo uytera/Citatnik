@@ -9,7 +9,6 @@ namespace Citatnik.Models
     {
         public string Login { get; set; }
         public string Password { get; set; }
-        public List<int> FavoriteCitates { get; set; }
 
         public User(string Login, string Password)
         {
