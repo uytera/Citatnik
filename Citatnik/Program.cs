@@ -19,19 +19,22 @@ namespace Citatnik
             CitataRepository citataRepository = new CitataRepository();
 
             User user1 = new User("login1", "password1", new int[] { 1, 2 });
-            Citata citata1 = new Citata(citataRepository.LastId, "Title1", "Content1", "26.03.2020");
-            Citata citata2 = new Citata(citataRepository.LastId, "Title2", "Content2", "25.03.2020");
+            User user2 = new User("login2", "password2", new int[] { 2 });
+            Citata citata1 = new Citata(citataRepository.lastId, "Title1", "Content1", "26.03.2020");
+            Citata citata2 = new Citata(citataRepository.lastId, "Title2", "Content2", "25.03.2020");
 
-            userRepository.AddUser(user1);
-            var temp = String.Join(" ", user1.CitataIds);
-            citataRepository.AddCitata(citata1);
-            citataRepository.AddCitata(citata2);
+            userRepository.Insert(user1);
+            userRepository.Insert(user2);
+            citataRepository.Insert(citata1);
+            citataRepository.Insert(citata2);
 
-            User user11 = (User)userRepository.GetUser("login1");
-            Citata citata11 = (Citata)citataRepository.GetCitata(1);
-            Citata citata21 = (Citata)citataRepository.GetCitata(2);
+            User user11 = (User)userRepository.Select("login1");
+            User user21 = (User)userRepository.Select("login2");
+            Citata citata11 = (Citata)citataRepository.Select(1);
+            Citata citata21 = (Citata)citataRepository.Select(2);
 
             Console.WriteLine(user11.Login + " " + user11.Password + " " + user11.CitataIds.ToString());
+            Console.WriteLine(user21.Login + " " + user21.Password + " " + user21.CitataIds.ToString());
             Console.WriteLine(citata11.CitataId + " " + citata11.Title + " " + citata11.Content + " " + citata11.CreationDate);
             Console.WriteLine(citata21.CitataId + " " + citata21.Title + " " + citata21.Content + " " + citata21.CreationDate);
 

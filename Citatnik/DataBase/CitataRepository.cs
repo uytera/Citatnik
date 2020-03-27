@@ -7,70 +7,83 @@ using System.Threading.Tasks;
 
 namespace Citatnik.DataBase
 {
-    public class CitataRepository : DataBaseRepository, ICitataRepository
+    public class CitataRepository : DataBaseRepository, IRepository<Citata>
     {
-        public int LastId;
+        private List<Citata> list = new List<Citata>();
+        public int lastId;
 
-        public void AddCitata(Citata citata)
+        public CitataRepository()
         {
             CreateDataBase();
-
-            using (SqliteConnection dbConnection = DbConnection())
-            {
-                dbConnection.Open();
-
-                SqliteCommand command = new SqliteCommand
-                {
-                    Connection = dbConnection,
-                    CommandText = @"INSERT INTO Citats (Title, Content, CreationDate)
-                                    VALUES ('" + citata.Title + "','" + citata.Content + "','" + citata.CreationDate + "')"
-                };
-
-                try
-                {
-                    command.ExecuteNonQuery();
-
-                    LastId += 1;
-                }
-                catch (SqliteException exeption)
-                {
-                    Console.WriteLine("Error when adding a citata to the database:" + exeption.Message);
-                }
-            }
+            UploadCitatsFromDataBase(list);
+            lastId = list.Count != 0 ? list.Last().CitataId + 1 : 1;
         }
 
-        public Citata GetCitata(int id)
+        public void Insert(Citata instanceT)
         {
-            CreateDataBase();
+            ExecuteSqlCommand(@"INSERT INTO Citats (CitataId, Title, Content, CreationDate)
+                                    VALUES ('" + instanceT.CitataId + "','"
+                                               + instanceT.Title + "','"
+                                               + instanceT.Content + "','"
+                                               + instanceT.CreationDate + "')");
+            list.Add(instanceT);
+            lastId += 1;
+        }
 
+        public void Update(Citata instanceT)
+        {
+            ExecuteSqlCommand(@"UPDATE Citats SET 
+                                    Title = '" + instanceT.Title + "', " +
+                                    "Content = '" + instanceT.Content + "' " +
+                               "WHERE CitataId = " + instanceT.CitataId + ";");
+            Citata oldCitata = list.Find(citata => citata.CitataId == instanceT.CitataId);
+            oldCitata = instanceT;
+        }
+
+
+        public void Delete(int id)
+        {
+            ExecuteSqlCommand("DELETE FROM Citats WHERE CitataId = " + id + ";");
+            list.RemoveAll(citata => citata.CitataId == id);
+        }
+
+
+        public Citata Select(object id)
+        {
+            int tempId = (int)id;
+            return list.Find(citata => citata.CitataId == tempId);
+        }
+
+        private static void UploadCitatsFromDataBase(List<Citata> list)
+        {
             using (SqliteConnection dbConnection = DbConnection())
             {
                 dbConnection.Open();
-
                 SqliteCommand command = new SqliteCommand
                 {
                     Connection = dbConnection,
-                    CommandText = "SELECT * FROM Citats WHERE CitataId = '" + id + "'"
+                    CommandText = "SELECT * FROM Citats"
                 };
 
                 try
                 {
                     SqliteDataReader reader = command.ExecuteReader();
 
-                    if (reader.HasRows)
+                    while (reader.Read())
                     {
-                        reader.Read();
-                        Citata citata = new Citata(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), reader.GetString(3));
-
-                        return citata;
+                        Citata citata = new Citata(reader.GetInt32(0),
+                                                   reader.GetString(1),
+                                                   reader.GetString(2),
+                                                   reader.GetString(3));
+                        list.Add(citata);
                     }
+
+                    list.Sort((citata1, citata2) => citata1.CitataId.CompareTo(citata2.CitataId));
                 }
                 catch (SqliteException exeption)
                 {
-                    Console.WriteLine("Error when getting the citata from the database:" + exeption.Message);
+                    Console.WriteLine("Error when executing custom command:" + exeption.Message);
                 }
-
-                return null;
             }
         }
     }

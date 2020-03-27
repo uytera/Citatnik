@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Citatnik.DataBase
 {
-    public class DataBaseRepository
+    public abstract class DataBaseRepository
     {
         public static string DbFile
         {
@@ -23,23 +23,29 @@ namespace Citatnik.DataBase
 
         protected static void CreateDataBase()
         {
+            ExecuteSqlCommand(@"CREATE TABLE IF NOT EXISTS Users (Login TEXT PRIMARY KEY, Password TEXT, CitataIds TEXT);
+                                CREATE TABLE IF NOT EXISTS Citats (CitataId INTEGER PRIMARY KEY, Title TEXT, Content TEXT, CreationDate TEXT);");
+        }
+
+
+        protected static void ExecuteSqlCommand(string commandString)
+        {
             using (SqliteConnection dbConnection = DbConnection())
             {
                 dbConnection.Open();
                 SqliteCommand command = new SqliteCommand
                 {
                     Connection = dbConnection,
-                    CommandText = @"CREATE TABLE IF NOT EXISTS Users (Login TEXT PRIMARY KEY, Password TEXT, CitataIds TEXT);
-                                    CREATE TABLE IF NOT EXISTS Citats (CitataId INTEGER PRIMARY KEY, Title TEXT, Content TEXT, CreationDate TEXT);"
+                    CommandText = commandString
                 };
 
                 try
                 {
                     command.ExecuteNonQuery();
                 }
-                catch(SqliteException exeption)
+                catch (SqliteException exeption)
                 {
-                    Console.WriteLine("Error when creating database:" + exeption.Message);
+                    Console.WriteLine("Error when executing custom command:" + commandString + exeption.Message);
                 }
             }
         }

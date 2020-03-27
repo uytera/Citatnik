@@ -7,38 +7,42 @@ using System.Threading.Tasks;
 
 namespace Citatnik.DataBase
 {
-    public class UserRepository : DataBaseRepository, IUserRepository
+    public class UserRepository : DataBaseRepository, IRepository<User>
     {
-        public void AddUser(User user)
+
+        public UserRepository()
         {
             CreateDataBase();
+        }
 
-            using (SqliteConnection dbConnection = DbConnection())
-            {
-                dbConnection.Open();
-
-                SqliteCommand command = new SqliteCommand
-                {
-                    Connection = dbConnection,
-                    CommandText = @"INSERT INTO Users (Login, Password, CitataIds)
-                                    VALUES ('" + user.Login + "','" + user.Password + "','" + String.Join(" ", user.CitataIds) + "')"
-                };
-
-                try
-                {
-                    command.ExecuteNonQuery();
-                }
-                catch(SqliteException exeption)
-                {
-                    Console.WriteLine("Error when adding a user to the database:" + exeption.Message);
-                }
-            }
+        public void Insert(User instanceT)
+        {
+            ExecuteSqlCommand(@"INSERT INTO Users (Login, Password, CitataIds)
+                                    VALUES ('" 
+                                            + instanceT.Login + "','"
+                                            + instanceT.Password + "','"
+                                            + String.Join(" ", instanceT.CitataIds) + "')");
         }
 
 
-        public User GetUser(string login)
+        public void Update(User instanceT)
         {
-            CreateDataBase();
+            ExecuteSqlCommand(@"UPDATE Users SET 
+                                    Password = '" + instanceT.Password + "', " +
+                                    "CitataIds = '" + String.Join(" ", instanceT.CitataIds) + "' " +
+                               "WHERE Login = " + instanceT.Login + ";");
+        }
+
+
+        public void Delete(int id)
+        {
+            ExecuteSqlCommand("DELETE FROM Users WHERE Login = " + id + ";");
+        }
+
+
+        public User Select(object id)
+        {
+            string tempId = (string)id;
 
             using (SqliteConnection dbConnection = DbConnection())
             {
@@ -47,16 +51,15 @@ namespace Citatnik.DataBase
                 SqliteCommand command = new SqliteCommand
                 {
                     Connection = dbConnection,
-                    CommandText = "SELECT * FROM Users WHERE Login = '" + login + "'"
+                    CommandText = "SELECT * FROM Users WHERE Login = '" + tempId + "'"
                 };
 
                 try
                 {
                     SqliteDataReader reader = command.ExecuteReader();
 
-                    if (reader.HasRows)
+                    if (reader.Read())
                     {
-                        reader.Read();
                         User user = new User(reader.GetString(0),
                                              reader.GetString(1),
                                              reader.GetString(2).Split(" ").Select(n => Convert.ToInt32(n)).ToArray());
@@ -64,7 +67,7 @@ namespace Citatnik.DataBase
                         return user;
                     }
                 }
-                catch(SqliteException exeption)
+                catch (SqliteException exeption)
                 {
                     Console.WriteLine("Error when getting the user from the database:" + exeption.Message);
                 }
