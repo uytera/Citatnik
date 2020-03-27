@@ -1,4 +1,5 @@
-﻿using Citatnik.Models;
+﻿using Citatnik.DataBase;
+using Citatnik.Models;
 using Citatnik.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -11,11 +12,11 @@ namespace Citatnik.Controllers
 {
     public class AccountController : Controller
     {
-        /*private UserContext db;
-        public AccountController(UserContext context)
+        private UserRepository db;
+        public AccountController(UserRepository context)
         {
             db = context;
-        }*/
+        }
 
         [HttpGet]
         public IActionResult Login()
@@ -28,14 +29,20 @@ namespace Citatnik.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = null;//new User(model.Login, model.Password);//await db.Users.FirstOrDefaultAsync(u => u.Login == model.Login && u.Password == model.Password);
+                User user = db.Select(model.Login); //db.Users.FirstOrDefaultAsync(u => u.Login == model.Login && u.Password == model.Password);
                 if (user != null)
                 {
+                    if(user.Password != model.Password)
+                    {
+                        ModelState.AddModelError("", "Некорректный пароль");
+                        return View(model);
+                    }
+                       
                     await Authenticate(model.Password); // аутентификация
 
                     return RedirectToAction("Index", "Home");
                 }
-                ModelState.AddModelError("", "Некорректные логин и(или) пароль");
+                ModelState.AddModelError("", "Некорректный логин");
             }
             return View(model);
         }
@@ -50,19 +57,18 @@ namespace Citatnik.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = null;//await db.Users.FirstOrDefaultAsync(u => u.Login == model.Login);
+                User user = db.Select(model.Login);
                 if (user == null)
                 {
                     // добавляем пользователя в бд
-                    /*db.Users.Add(new User { Login = model.Login, Password = model.Password });
-                    await db.SaveChangesAsync();
+                    db.Insert(new User(model.Login, model.Password, new int[10]));
 
                     await Authenticate(model.Login); // аутентификация
 
-                    return RedirectToAction("Index", "Home");*/
+                    return RedirectToAction("Index", "Home");
                 }
                 else
-                    ModelState.AddModelError("", "Некорректные логин и(или) пароль");
+                    ModelState.AddModelError("", "Такой пользователь уже существует");
             }
             return View(model);
         }
