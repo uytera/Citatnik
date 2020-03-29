@@ -9,9 +9,9 @@ namespace Citatnik.Models
     {
         public string Login { get; set; }
         public string Password { get; set; }
-        public int[] CitataIds { get; set; }
+        public List<int> CitataIds { get; set; }
 
-        public User(string login, string password, int[] citataIds)
+        public User(string login, string password, List<int> citataIds)
         {
             Login = login;
             Password = password;

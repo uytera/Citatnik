@@ -62,7 +62,7 @@ namespace Citatnik.DataBase
                     {
                         User user = new User(reader.GetString(0),
                                              reader.GetString(1),
-                                             reader.GetString(2).Split(" ").Select(n => Convert.ToInt32(n)).ToArray());
+                                             reader.GetString(2).Split(" ").Select(n => Convert.ToInt32(n)).ToList());
 
                         return user;
                     }
