@@ -9,11 +9,19 @@ namespace Citatnik.DataBase
 {
     public class UserRepository : DataBaseRepository, IRepository<User>
     {
+        private static UserRepository instance;
 
-        public UserRepository()
+        public static UserRepository getInstance()
         {
-            CreateDataBase();
+            if (instance == null)
+            {
+                CreateDataBase();
+                instance = new UserRepository();
+            }
+
+            return instance;
         }
+
 
         public void Insert(User instanceT)
         {
@@ -75,5 +83,8 @@ namespace Citatnik.DataBase
                 return null;
             }
         }
+
+
+        private UserRepository() { }
     }
 }

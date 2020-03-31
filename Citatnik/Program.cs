@@ -15,13 +15,13 @@ namespace Citatnik
     {
         public static void Main(string[] args)
         {
-            UserRepository userRepository = new UserRepository();
-            CitataRepository citataRepository = new CitataRepository();
+            UserRepository userRepository = UserRepository.getInstance();
+            CitataRepository citataRepository = CitataRepository.getInstance();
 
             User user1 = new User("login1", "password1", new List<int> { 1, 2 });
             User user2 = new User("login2", "password2", new List<int> { 2 });
-            Citata citata1 = new Citata(citataRepository.lastId, "Title1", "Content1", "26.03.2020");
-            Citata citata2 = new Citata(citataRepository.lastId, "Title2", "Content2", "25.03.2020");
+            Citata citata1 = new Citata(citataRepository.GetLastId(), "Title1", "Content1", "26.03.2020");
+            Citata citata2 = new Citata(citataRepository.GetLastId(), "Title2", "Content2", "25.03.2020");
 
             userRepository.Insert(user1);
             userRepository.Insert(user2);

@@ -9,15 +9,26 @@ namespace Citatnik.DataBase
 {
     public class CitataRepository : DataBaseRepository, IRepository<Citata>
     {
-        private List<Citata> list = new List<Citata>();
-        public int lastId;
+        private static List<Citata> list = new List<Citata>();
+        private static CitataRepository instance;
 
-        public CitataRepository()
+        private static int lastId;
+
+        public int GetLastId() { return lastId; }
+
+
+        public static CitataRepository getInstance()
         {
-            CreateDataBase();
-            UploadCitatsFromDataBase(list);
-            lastId = list.Count != 0 ? list.Last().CitataId + 1 : 1;
+            if (instance == null)
+            {
+                CreateDataBase();
+                UploadCitatsFromDataBase(list);
+                lastId = list.Count != 0 ? list.Last().CitataId + 1 : 1;
+            }
+
+            return instance;
         }
+
 
         public void Insert(Citata instanceT)
         {
@@ -29,6 +40,7 @@ namespace Citatnik.DataBase
             list.Add(instanceT);
             lastId += 1;
         }
+
 
         public void Update(Citata instanceT)
         {
@@ -53,6 +65,7 @@ namespace Citatnik.DataBase
             int tempId = (int)id;
             return list.Find(citata => citata.CitataId == tempId);
         }
+
 
         private static void UploadCitatsFromDataBase(List<Citata> list)
         {
@@ -86,5 +99,8 @@ namespace Citatnik.DataBase
                 }
             }
         }
+
+
+        private CitataRepository() { }
     }
 }
