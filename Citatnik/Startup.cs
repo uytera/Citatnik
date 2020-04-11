@@ -33,7 +33,7 @@ namespace Citatnik
                     options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
                 });
             services.AddControllersWithViews();
-            services.AddScoped<UserRepository>();
+            services.AddSingleton(c => UserRepository.getInstance());
 
 
         }
