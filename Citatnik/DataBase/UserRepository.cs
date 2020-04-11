@@ -68,9 +68,20 @@ namespace Citatnik.DataBase
 
                     if (reader.Read())
                     {
-                        User user = new User(reader.GetString(0),
-                                             reader.GetString(1),
-                                             reader.GetString(2).Split(" ").Select(n => Convert.ToInt32(n)).ToList());
+                        User user;
+
+                        if (reader.GetString(2).Equals(""))
+                        {
+                            user = new User(reader.GetString(0),
+                                            reader.GetString(1),
+                                            new List<int>());
+                        }
+                        else
+                        {
+                            user = new User(reader.GetString(0),
+                                            reader.GetString(1),
+                                            reader.GetString(2).Split(" ").Select(n => Convert.ToInt32(n)).ToList());
+                        }
 
                         return user;
                     }
