@@ -24,6 +24,7 @@ namespace Citatnik.DataBase
                 CreateDataBase();
                 UploadCitatsFromDataBase(list);
                 lastId = list.Count != 0 ? list.Last().CitataId + 1 : 1;
+                instance = new CitataRepository();
             }
 
             return instance;
