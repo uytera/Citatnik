@@ -8,6 +8,8 @@ namespace Citatnik.ViewModels
 {
     public class LoginModel
     {
+        public string sss = "asdasdsad";
+
         [Required(ErrorMessage = "Не указан логин")]
         public string Login { get; set; }
 

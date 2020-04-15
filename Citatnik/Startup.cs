@@ -34,8 +34,7 @@ namespace Citatnik
                 });
             services.AddControllersWithViews();
             services.AddSingleton(c => UserRepository.getInstance());
-
-
+            services.AddSingleton(c => CitataRepository.getInstance());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

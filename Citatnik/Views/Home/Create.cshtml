@@ -1,0 +1,11 @@
+﻿@model Citatnik.ViewModels.CreateCitataModel
+@{
+    ViewData["Title"] = "Добавление нового пользователя";
+}
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" asp-controller="Home">
+    <div><label>Заголовок</label><br /><input asp-for="Title" /></div>
+    <div><label>Контент</label><br /><input asp-for="Content" /></div>
+    <input type="submit" value="Отправить" />
+</form>

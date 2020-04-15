@@ -15,7 +15,7 @@ namespace Citatnik
     {
         public static void Main(string[] args)
         {
-            UserRepository userRepository = UserRepository.getInstance();
+            /*UserRepository userRepository = UserRepository.getInstance();
             CitataRepository citataRepository = CitataRepository.getInstance();
 
             User user1 = new User("login1", "password1", new List<int> { 1, 2 });
@@ -43,7 +43,7 @@ namespace Citatnik
             Console.WriteLine(user31.Login + " " + user31.Password + " " + user31.CitataIds.ToArray());
 
             Console.WriteLine(citata11.CitataId + " " + citata11.Title + " " + citata11.Content + " " + citata11.CreationDate);
-            Console.WriteLine(citata21.CitataId + " " + citata21.Title + " " + citata21.Content + " " + citata21.CreationDate);
+            Console.WriteLine(citata21.CitataId + " " + citata21.Title + " " + citata21.Content + " " + citata21.CreationDate);*/
 
             CreateHostBuilder(args).Build().Run();
         }
