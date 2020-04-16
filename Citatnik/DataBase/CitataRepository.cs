@@ -101,6 +101,11 @@ namespace Citatnik.DataBase
             }
         }
 
+        public List<Citata> GetCitatasList()
+        {
+            return list;
+        }
+
 
         private CitataRepository() { }
     }

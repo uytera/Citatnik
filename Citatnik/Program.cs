@@ -45,6 +45,8 @@ namespace Citatnik
             Console.WriteLine(citata11.CitataId + " " + citata11.Title + " " + citata11.Content + " " + citata11.CreationDate);
             Console.WriteLine(citata21.CitataId + " " + citata21.Title + " " + citata21.Content + " " + citata21.CreationDate);*/
 
+            var list = citataRepository.GetCitatasList();
+
             CreateHostBuilder(args).Build().Run();
         }
 
