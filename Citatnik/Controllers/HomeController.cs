@@ -30,8 +30,7 @@ namespace Citatnik.Controllers
         [HttpGet]
         public IActionResult Index(HomeModel model)
         {
-            model.Citatas.Add(db.Select(1));
-            model.Citatas.Add(db.Select(36));
+            model.Citatas = db.GetCitatasList();
             return View(model);
         }
 
