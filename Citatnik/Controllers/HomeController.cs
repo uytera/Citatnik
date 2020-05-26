@@ -43,7 +43,7 @@ namespace Citatnik.Controllers
         [HttpPost]
         public IActionResult Create(CreateCitataModel model)
         {
-            Citata newCitata = new Citata(db.GetLastId(), model.Title, model.Title, DateTime.Now.ToString());
+            Citata newCitata = new Citata(db.GetLastId(), model.Title, model.Content, DateTime.Now.ToString());
             db.Insert(newCitata);
             logger.LogInformation($"Создана цитата с id: {newCitata.CitataId} с заголовком: {newCitata.Title} с контентом: {newCitata.Content} и с датой: {newCitata.CreationDate}");
             return RedirectToAction("Index", "Home");

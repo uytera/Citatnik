@@ -37,7 +37,7 @@ namespace Citatnik.Controllers
         {
             IPHostEntry heserver = Dns.GetHostEntry(Dns.GetHostName());
             var ip = heserver.AddressList[2].ToString();
-            //var ip = accessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
+            var tempIp = accessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
 
             if (ModelState.IsValid)
             {
